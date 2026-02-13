@@ -28,6 +28,7 @@ export class UsersService {
             ...rest,
             passwordHash,
         });
+        // save usually returns the single entity if passed a single entity
         return this.usersRepository.save(newUser);
     }
 }
