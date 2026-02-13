@@ -15,13 +15,20 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
+      // Allow using a single connection string (common in Render/Railway)
+      url: process.env.DATABASE_URL,
+      // Fallback to individual params if no URL provided
       host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432'),
       username: process.env.DB_USER || 'admin',
       password: process.env.DB_PASSWORD || 'password123',
       database: process.env.DB_NAME || 'crm_db',
       entities: [User, Participant, Trajectory, HourEntry],
-      synchronize: true, // Only for dev!
+      synchronize: true, // Auto-create tables (dev/MVP only)
+      // SSL is often required for production PaaS databases
+      ssl: process.env.DB_SSL === 'true' || process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : false,
     }),
     AuthModule,
   ],
@@ -29,4 +36,3 @@ import { AuthModule } from './auth/auth.module';
   providers: [AppService],
 })
 export class AppModule { }
-
