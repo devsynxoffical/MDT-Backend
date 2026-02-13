@@ -28,7 +28,7 @@ export class UsersService {
             ...rest,
             passwordHash,
         });
-        // save usually returns the single entity if passed a single entity
-        return this.usersRepository.save(newUser);
+        // Force cast to any to resolve TypeScript overload confusion
+        return this.usersRepository.save(newUser) as any;
     }
 }
